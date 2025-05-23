@@ -5,5 +5,5 @@ services:
     buildCommand: pip install -r requirements.txt
     startCommand: python app.py
     envVars:
-      - key: GOOGLE_APPLICATION_CREDENTIALS
+      - key: AIzaSyAmYTYae7j850CZdOYHj7lPCUZE2ybl4kM
         value: serviceAccountKey.json
