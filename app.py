@@ -1,13 +1,11 @@
-import os
-import json
+from dotenv import load_dotenv
+import os, json
 from firebase_admin import credentials, initialize_app
 
-# 從環境變數讀取 JSON 內容
-firebase_key_json = os.environ.get("FIREBASE_SERVICE_ACCOUNT")
+load_dotenv()
 
-if not firebase_key_json:
-    raise Exception("Missing FIREBASE_SERVICE_ACCOUNT environment variable")
-
-cred_dict = json.loads(firebase_key_json)
+# 讀取並解析 JSON
+cred_json = os.environ.get("FIREBASE_SERVICE_ACCOUNT")
+cred_dict = json.loads(cred_json)
 cred = credentials.Certificate(cred_dict)
 initialize_app(cred)
