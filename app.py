@@ -54,3 +54,8 @@ def send_notification():
         return jsonify({"message": "Notification sent", "id": response})
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+        
+@app.route("/tokens", methods=["GET"])
+def list_tokens():
+    return jsonify(user_tokens)
+    
