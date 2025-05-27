@@ -91,6 +91,25 @@ def send_notification():
     except Exception as e:
         return jsonify({"error": f"Send failed: {str(e)}"}), 500
         
+@app.route("/send_single", methods=["POST"])
+def send_single():
+    from firebase_admin import messaging
+
+    data = request.json
+    token = data.get("token")
+    title = data.get("title", "通知")
+    body = data.get("body", "這是單一 token 測試")
+
+    try:
+        message = messaging.Message(
+            notification=messaging.Notification(title=title, body=body),
+            token=token
+        )
+        response = messaging.send(message)
+        return jsonify({"message": "Sent", "id": response})
+    except Exception as e:
+        return jsonify({"error": f"Send failed: {e}"}), 500        
+        
 @app.route("/tokens", methods=["GET"])
 def list_tokens():
     return jsonify(user_tokens)
