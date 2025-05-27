@@ -48,8 +48,13 @@ def send_notification():
     if not tokens:
         return jsonify({"error": "User not found or token missing"}), 404
 
-    if not isinstance(tokens, list) or len(tokens) == 0:
-        return jsonify({"error": "No valid tokens to send"}), 400
+    # 🚧 自動轉換舊格式（單一 string）為 list
+    if isinstance(tokens, str):
+        tokens = [tokens]
+        user_tokens[user_id] = tokens  # 更新為新版格式
+
+    if not tokens:
+        return jsonify({"error": "No tokens available"}), 400
 
     message = messaging.MulticastMessage(
         notification=messaging.Notification(title=title, body=body),
@@ -59,12 +64,12 @@ def send_notification():
     try:
         response = messaging.send_multicast(message)
 
+        # 🔍 移除失敗的 token
         failed_tokens = []
         for idx, resp in enumerate(response.responses):
             if not resp.success:
                 failed_tokens.append(tokens[idx])
 
-        # 自動移除失敗 token
         if failed_tokens:
             user_tokens[user_id] = [t for t in tokens if t not in failed_tokens]
 
