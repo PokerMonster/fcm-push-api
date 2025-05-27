@@ -62,6 +62,12 @@ def send_notification():
     )
 
     try:
+        print(f"🚀 即將推播 tokens: {tokens}")
+
+        message = messaging.MulticastMessage(
+            notification=messaging.Notification(title=title, body=body),
+            tokens=tokens,
+       )
         response = messaging.send_multicast(message)
 
         # 🔍 移除失敗的 token
@@ -69,6 +75,7 @@ def send_notification():
         for idx, resp in enumerate(response.responses):
             if not resp.success:
                 failed_tokens.append(tokens[idx])
+                print(f"❌ 發送失敗 token: {tokens[idx]} | 原因: {resp.exception}")
 
         if failed_tokens:
             user_tokens[user_id] = [t for t in tokens if t not in failed_tokens]
@@ -79,32 +86,7 @@ def send_notification():
             "failure_count": response.failure_count,
             "failed_tokens": failed_tokens
         })
-    # 新添加print 出來    
-    try:
-    print(f"🚀 即將推播 tokens: {tokens}")
-
-    message = messaging.MulticastMessage(
-        notification=messaging.Notification(title=title, body=body),
-        tokens=tokens,
-    )
-
-    response = messaging.send_multicast(message)
-
-    failed_tokens = []
-    for idx, resp in enumerate(response.responses):
-        if not resp.success:
-            failed_tokens.append(tokens[idx])
-            print(f"❌ 發送失敗 token: {tokens[idx]} | 原因: {resp.exception}")
-
-    if failed_tokens:
-        user_tokens[user_id] = [t for t in tokens if t not in failed_tokens]
-
-    return jsonify({
-        "message": "Notification sent",
-        "success_count": response.success_count,
-        "failure_count": response.failure_count,
-        "failed_tokens": failed_tokens
-    })
+   
 
     except Exception as e:
         return jsonify({"error": f"Send failed: {str(e)}"}), 500
