@@ -48,22 +48,31 @@ def send_notification():
     if not tokens:
         return jsonify({"error": "User not found or token missing"}), 404
 
-    message = messaging.MulticastMessage(
-        notification=messaging.Notification(
-            title=title,
-            body=body,
-        ),
-        tokens=tokens,
-    )
+    if not isinstance(tokens, list) or len(tokens) == 0:
+        return jsonify({"error": "No valid tokens to send"}), 400
 
     try:
+        message = messaging.MulticastMessage(
+            notification=messaging.Notification(title=title, body=body),
+            tokens=tokens,
+        )
         response = messaging.send_multicast(message)
-        return jsonify({"message": "Notification sent", 
-            "id": response,
+
+        # 找出失敗的 token（可選）
+        failed_tokens = []
+        for idx, resp in enumerate(response.responses):
+            if not resp.success:
+                failed_tokens.append(tokens[idx])
+
+        return jsonify({
+            "message": "Notification sent",
             "success_count": response.success_count,
-            "failure_count": response.failure_count})
+            "failure_count": response.failure_count,
+            "failed_tokens": failed_tokens
+        })
+
     except Exception as e:
-        return jsonify({"error": str(e)}), 500
+        return jsonify({"error": f"Send failed: {str(e)}"}), 500
         
 @app.route("/tokens", methods=["GET"])
 def list_tokens():
