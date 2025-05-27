@@ -51,18 +51,22 @@ def send_notification():
     if not isinstance(tokens, list) or len(tokens) == 0:
         return jsonify({"error": "No valid tokens to send"}), 400
 
+    message = messaging.MulticastMessage(
+        notification=messaging.Notification(title=title, body=body),
+        tokens=tokens,
+    )
+
     try:
-        message = messaging.MulticastMessage(
-            notification=messaging.Notification(title=title, body=body),
-            tokens=tokens,
-        )
         response = messaging.send_multicast(message)
 
-        # 找出失敗的 token（可選）
         failed_tokens = []
         for idx, resp in enumerate(response.responses):
             if not resp.success:
                 failed_tokens.append(tokens[idx])
+
+        # 自動移除失敗 token
+        if failed_tokens:
+            user_tokens[user_id] = [t for t in tokens if t not in failed_tokens]
 
         return jsonify({
             "message": "Notification sent",
