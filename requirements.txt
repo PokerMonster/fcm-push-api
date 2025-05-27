@@ -1,4 +1,7 @@
 flask
+flask-cors
 firebase-admin
+google-auth
 gunicorn
 python-dotenv
+pip install --upgrade pip
