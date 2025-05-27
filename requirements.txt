@@ -4,4 +4,3 @@ firebase-admin
 google-auth
 gunicorn
 python-dotenv
---upgrade pip
