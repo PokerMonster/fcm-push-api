@@ -6,11 +6,11 @@ from firebase_admin import credentials, initialize_app
 import mysql.connector
 
 db = mysql.connector.connect(
-    host=os.environ.get("fcm-mysql-api.in2soft.net"),
-    port=int(os.environ.get("51306")),
-    user=os.environ.get("fcmuser"),
-    password=os.environ.get("FcMepAss9021"),
-    database=os.environ.get("fcmdb")
+    MYSQL_HOST=fcm-mysql-api.in2soft.net
+    MYSQL_PORT=51306
+    MYSQL_USER=fcmuser
+    MYSQL_PASSWORD=FcMepAss9021
+    MYSQL_DATABASE=fcmdb
 )
 cursor = db.cursor(dictionary=True)
 
