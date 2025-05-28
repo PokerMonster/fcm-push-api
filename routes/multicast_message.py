@@ -42,13 +42,13 @@ def send_multicast_notification(tokens, title, body, data=None):
             "error": str(e)
         }
     if not tokens:
-    print("设备令牌列表为空，无法发送通知。")
-    return {
-        "success_count": 0,
-        "failure_count": 0,
-        "responses": [],
-        "error": "No device tokens provided."
-    }
+        print("设备令牌列表为空，无法发送通知。")
+        return {
+            "success_count": 0,
+            "failure_count": 0,
+            "responses": [],
+            "error": "No device tokens provided."
+        }
     for idx, resp in enumerate(response.responses):
         if resp.success:
             print(f"訊息成功發送至設備 {tokens[idx]}")
