@@ -28,7 +28,7 @@ def send_notification():
         )
         cursor = db.cursor(buffered=True, dictionary=True)
         cursor.execute("SELECT token FROM fcm_tokens WHERE user_id = %s", (user_id,))
-        result = cursor.fetchone()
+        results = cursor.fetchall()
         cursor.close()
         db.close()
 
