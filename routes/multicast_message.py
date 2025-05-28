@@ -31,7 +31,7 @@ def send_multicast_notification(tokens, title, body, data=None):
     #response = messaging.send_multicast(message)
 
     try:
-    response = messaging.send_multicast(message)
+        response = messaging.send_multicast(message)
     # 处理响应
     except Exception as e:
         print(f"发送通知时发生错误: {e}")
