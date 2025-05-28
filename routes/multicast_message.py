@@ -26,6 +26,11 @@ def send_multicast_notification(tokens, title, body, data=None):
     )
 
     response = messaging.send_multicast(message)
+    for idx, resp in enumerate(response.responses):
+    if resp.success:
+        print(f"訊息成功發送至設備 {tokens[idx]}")
+    else:
+        print(f"訊息發送至設備 {tokens[idx]} 失敗，錯誤：{resp.exception}")
     return {
         "success_count": response.success_count,
         "failure_count": response.failure_count,
