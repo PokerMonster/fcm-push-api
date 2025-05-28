@@ -16,12 +16,8 @@ def send_notification():
     title = data.get("title", "通知")
     body = data.get("body", "這是預設訊息")
 
-    cursor = db.cursor(buffered=True, dictionary=True)
-    cursor.execute("SELECT token FROM fcm_tokens WHERE user_id = %s", (user_id,))
-    tokens = cursor.fetchall()
-
-    # 假設 user_tokens 是全域變數，實際應從資料庫或其他來源獲取
     try:
+        # 建立資料庫連線
         db = mysql.connector.connect(
             host=os.environ.get("MYSQL_HOST"),
             port=int(os.environ.get("MYSQL_PORT")),
