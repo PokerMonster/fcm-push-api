@@ -7,9 +7,11 @@ from firebase_admin import credentials, messaging
 multicast_bp = Blueprint('multicast_bp', __name__)
 
 # 初始化 Firebase Admin SDK
-if not firebase_admin._apps:
-    cred = credentials.Certificate(os.environ.get("GOOGLE_APPLICATION_CREDENTIALS"))
-    firebase_admin.initialize_app(cred)
+cred_json = os.environ.get("FIREBASE_SERVICE_ACCOUNT")
+cred_dict = json.loads(cred_json)
+cred_dict["private_key"] = cred_dict["private_key"].replace("\\n", "\n")
+cred = credentials.Certificate(cred_dict)
+initialize_app(cred)
 
 def send_multicast_notification(tokens, title, body, data=None):
     """
