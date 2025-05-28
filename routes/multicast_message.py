@@ -2,7 +2,7 @@
 from flask import Blueprint
 import os, json
 import firebase_admin
-from firebase_admin import credentials, messaging
+from firebase_admin import credentials, messaging, initialize_app
 from dotenv import load_dotenv
 
 multicast_bp = Blueprint('multicast_bp', __name__)
