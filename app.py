@@ -41,10 +41,6 @@ except mysql.connector.Error as err:
 def index():
     return "✅ Flask + Firebase Ready on Render!"
 
-@app.route("/tokens", methods=["GET"])
-def list_tokens():
-    return jsonify(user_tokens)
-
 if __name__ == "__main__":
     app.run()
     
