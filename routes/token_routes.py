@@ -19,11 +19,11 @@ def update_token():
 
     try:
         db = mysql.connector.connect(
-            host=os.environ.get("DB_HOST"),
-            port=int(os.environ.get("DB_PORT")),
-            user=os.environ.get("DB_USER"),
-            password=os.environ.get("DB_PASSWORD"),
-            database=os.environ.get("DB_NAME")
+            host=os.environ.get("MYSQL_HOST"),
+            port=int(os.environ.get("MYSQL_PORT")),
+            user=os.environ.get("MYSQL_USER"),
+            password=os.environ.get("MYSQL_PASSWORD"),
+            database=os.environ.get("MYSQL_DATABASE")
         )
         cursor = db.cursor()
         # 使用 INSERT ... ON DUPLICATE KEY UPDATE 语句来插入或更新 token
@@ -43,11 +43,11 @@ def update_token():
 def list_tokens():
     try:
         db = mysql.connector.connect(
-            host=os.environ.get("DB_HOST"),
-            port=int(os.environ.get("DB_PORT")),
-            user=os.environ.get("DB_USER"),
-            password=os.environ.get("DB_PASSWORD"),
-            database=os.environ.get("DB_NAME")
+            host=os.environ.get("MYSQL_HOST"),
+            port=int(os.environ.get("MYSQL_PORT")),
+            user=os.environ.get("MYSQL_USER"),
+            password=os.environ.get("MYSQL_PASSWORD"),
+            database=os.environ.get("MYSQL_DATABASE")
         )
         cursor = db.cursor(dictionary=True)
         cursor.execute("SELECT user_id, token FROM fcm_tokens")
