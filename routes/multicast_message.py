@@ -1,4 +1,4 @@
-# multicast_message.py
+# routes/multicast_message.py
 from flask import Blueprint
 import os, json
 import firebase_admin
