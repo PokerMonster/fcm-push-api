@@ -1,11 +1,13 @@
 # multicast_message.py
 from flask import Blueprint
-import os
+import os, json
 import firebase_admin
 from firebase_admin import credentials, messaging
+from dotenv import load_dotenv
 
 multicast_bp = Blueprint('multicast_bp', __name__)
 
+load_dotenv()
 # 初始化 Firebase Admin SDK
 cred_json = os.environ.get("FIREBASE_SERVICE_ACCOUNT")
 cred_dict = json.loads(cred_json)
