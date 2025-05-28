@@ -4,6 +4,7 @@ from firebase_admin import messaging
 import mysql.connector
 import os
 from dotenv import load_dotenv
+from .multicast_message import send_multicast_notification
 
 load_dotenv()
 
@@ -34,18 +35,14 @@ def send_notification():
         if not result:
             return jsonify({"error": "User not found or token missing"}), 404
 
-        token = result['token']
+        tokens = [row['token'] for row in results]
+        response = send_multicast_notification(tokens, title, body)
 
-        message = messaging.Message(
-            notification=messaging.Notification(
-                title=title,
-                body=body,
-            ),
-            token=token,
-        )
-
-        response = messaging.send(message)
-        return jsonify({"message": "Notification sent", "id": response})
+        return jsonify({
+            "message": "Notification sent",
+            "success": response["success_count"],
+            "failure": response["failure_count"]
+        })
     except mysql.connector.Error as err:
         return jsonify({"error": str(err)}), 500
     except Exception as e:
