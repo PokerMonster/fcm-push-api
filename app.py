@@ -2,17 +2,7 @@ from flask import Flask, request, jsonify
 import os, json
 from dotenv import load_dotenv
 from firebase_admin import credentials, initialize_app
-
 import mysql.connector
-
-db = mysql.connector.connect(
-    MYSQL_HOST=fcm-mysql-api.in2soft.net
-    MYSQL_PORT=51306
-    MYSQL_USER=fcmuser
-    MYSQL_PASSWORD=FcMepAss9021
-    MYSQL_DATABASE=fcmdb
-)
-cursor = db.cursor(dictionary=True)
 
 load_dotenv()
 
@@ -24,6 +14,22 @@ initialize_app(cred)
 
 app = Flask(__name__)  # ← 必須是 app！
 user_tokens = {}
+
+db_config = {
+    'host': os.getenv('MYSQL_HOST'),
+    'port': int(os.getenv('MYSQL_PORT')),
+    'user': os.getenv('MYSQL_USER'),
+    'password': os.getenv('MYSQL_PASSWORD'),
+    'database': os.getenv('MYSQL_DATABASE')
+}
+
+# 建立数据库连接
+try:
+    db = mysql.connector.connect(**db_config)
+    cursor = db.cursor(dictionary=True)
+    print("✅ 成功连接到数据库")
+except mysql.connector.Error as err:
+    print(f"❌ 数据库连接失败: {err}")
 
 @app.route("/")
 def index():
