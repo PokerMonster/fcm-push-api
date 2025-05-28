@@ -11,10 +11,14 @@ notification_bp = Blueprint('notification_bp', __name__)
 
 @notification_bp.route('/send_notification', methods=['POST'])
 def send_notification():
-    data = request.json
+    data = request.get_json()
     user_id = data.get("user_id")
     title = data.get("title", "通知")
     body = data.get("body", "這是預設訊息")
+
+    cursor = db.cursor(dictionary=True)
+    cursor.execute("SELECT token FROM fcm_tokens WHERE user_id = %s", (user_id,))
+    tokens = cursor.fetchall()
 
     # 假設 user_tokens 是全域變數，實際應從資料庫或其他來源獲取
     try:
