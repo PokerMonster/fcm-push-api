@@ -7,7 +7,7 @@ import mysql.connector
 
 db = mysql.connector.connect(
     host=os.environ.get("fcm-mysql-api.in2soft.net"),
-    port=os.environ.get("51306"),
+    port=int(os.environ.get("51306")),
     user=os.environ.get("fcmuser"),
     password=os.environ.get("FcMepAss9021"),
     database=os.environ.get("fcmdb")
