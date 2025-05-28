@@ -16,7 +16,7 @@ def send_notification():
     title = data.get("title", "通知")
     body = data.get("body", "這是預設訊息")
 
-    cursor = db.cursor(dictionary=True)
+    cursor = db.cursor(buffered=True, dictionary=True)
     cursor.execute("SELECT token FROM fcm_tokens WHERE user_id = %s", (user_id,))
     tokens = cursor.fetchall()
 
@@ -29,7 +29,7 @@ def send_notification():
             password=os.environ.get("MYSQL_PASSWORD"),
             database=os.environ.get("MYSQL_DATABASE")
         )
-        cursor = db.cursor(dictionary=True)
+        cursor = db.cursor(buffered=True, dictionary=True)
         cursor.execute("SELECT token FROM fcm_tokens WHERE user_id = %s", (user_id,))
         result = cursor.fetchone()
         cursor.close()
