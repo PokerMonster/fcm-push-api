@@ -8,6 +8,9 @@ from dotenv import load_dotenv
 multicast_bp = Blueprint('multicast_bp', __name__)
 
 load_dotenv()
+if not firebase_admin._apps:
+    cred = credentials.Certificate(cred_dict)
+    firebase_admin.initialize_app(cred)
 
 def send_multicast_notification(tokens, title, body, data=None):
     """
@@ -25,7 +28,27 @@ def send_multicast_notification(tokens, title, body, data=None):
         tokens=tokens,
     )
 
+    #response = messaging.send_multicast(message)
+
+    try:
     response = messaging.send_multicast(message)
+    # 处理响应
+    except Exception as e:
+        print(f"发送通知时发生错误: {e}")
+        return {
+            "success_count": 0,
+            "failure_count": len(tokens),
+            "responses": [],
+            "error": str(e)
+        }
+    if not tokens:
+    print("设备令牌列表为空，无法发送通知。")
+    return {
+        "success_count": 0,
+        "failure_count": 0,
+        "responses": [],
+        "error": "No device tokens provided."
+    }
     for idx, resp in enumerate(response.responses):
         if resp.success:
             print(f"訊息成功發送至設備 {tokens[idx]}")
