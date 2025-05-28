@@ -19,11 +19,11 @@ def send_notification():
     # 假設 user_tokens 是全域變數，實際應從資料庫或其他來源獲取
     try:
         db = mysql.connector.connect(
-            host=os.environ.get("DB_HOST"),
-            port=int(os.environ.get("DB_PORT")),
-            user=os.environ.get("DB_USER"),
-            password=os.environ.get("DB_PASSWORD"),
-            database=os.environ.get("DB_NAME")
+            host=os.environ.get("MYSQL_HOST"),
+            port=int(os.environ.get("MYSQL_PORT")),
+            user=os.environ.get("MYSQL_USER"),
+            password=os.environ.get("MYSQL_PASSWORD"),
+            database=os.environ.get("MYSQL_DATABASE")
         )
         cursor = db.cursor(dictionary=True)
         cursor.execute("SELECT token FROM fcm_tokens WHERE user_id = %s", (user_id,))
