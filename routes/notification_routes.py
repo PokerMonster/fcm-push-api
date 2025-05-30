@@ -5,6 +5,7 @@ import mysql.connector
 import os
 from dotenv import load_dotenv
 from .multicast_message import send_multicast_notification
+from module.db import get_db_connection
 
 load_dotenv()
 
@@ -19,18 +20,13 @@ def send_notification():
 
     try:
         # 建立資料庫連線
-        db = mysql.connector.connect(
-            host=os.environ.get("MYSQL_HOST"),
-            port=int(os.environ.get("MYSQL_PORT")),
-            user=os.environ.get("MYSQL_USER"),
-            password=os.environ.get("MYSQL_PASSWORD"),
-            database=os.environ.get("MYSQL_DATABASE")
-        )
-        cursor = db.cursor(buffered=True, dictionary=True)
-        cursor.execute("SELECT token FROM fcm_tokens WHERE user_id = %s", (user_id,))
-        results = cursor.fetchall()
-        cursor.close()
-        db.close()
+        db = get_db_connection()
+        if db:     
+            cursor = db.cursor(buffered=True, dictionary=True)
+            cursor.execute("SELECT token FROM fcm_tokens WHERE user_id = %s", (user_id,))
+            results = cursor.fetchall()
+            cursor.close()
+            db.close()
 
         if not result:
             return jsonify({"error": "User not found or token missing"}), 404
