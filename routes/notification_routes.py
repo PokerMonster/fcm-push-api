@@ -43,3 +43,8 @@ def send_notification():
         return jsonify({"error": str(err)}), 500
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+    for idx, resp in enumerate(response.responses):
+        if resp.success:
+            print(f"✅ 成功發送至: {tokens[idx]}")
+        else:
+            print(f"❌ 發送失敗: {tokens[idx]}, 錯誤：{resp.exception}")
