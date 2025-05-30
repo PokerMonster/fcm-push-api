@@ -44,22 +44,27 @@ def send_multicast_notification(tokens, title, body, data=None):
 
     detailed_responses = []
     for idx, resp in enumerate(response.responses):
+        token = tokens[idx]
         if resp.success:
-            print(f"✅ 訊息成功發送至設備 {tokens[idx]}")
-            detailed_responses.append({
-                "token": tokens[idx],
-                "success": True
-            })
+            print(f"✅ 訊息成功發送至設備 {token}")
+            detailed_responses.append({"token": token, "success": True})
         else:
-            print(f"❌ 發送至設備 {tokens[idx]} 失敗，錯誤：{resp.exception}")
+            error_str = str(resp.exception)
+            print(f"❌ 發送失敗: {token}, 錯誤：{error_str}")
             detailed_responses.append({
-                "token": tokens[idx],
+                "token": token,
                 "success": False,
-                "error": str(resp.exception)
+                "error": error_str
             })
+            # 判斷無效 token
+            if "registration token is not a valid FCM token" in error_str or \
+               "Requested entity was not found" in error_str or \
+               "Unregistered" in error_str:
+                invalid_tokens.append(token)
 
     return {
         "success_count": response.success_count,
         "failure_count": response.failure_count,
-        "responses": detailed_responses
+        "responses": detailed_responses,
+        "invalid_tokens": invalid_tokens
     }
