@@ -3,6 +3,8 @@ from flask import Blueprint, request, jsonify
 import mysql.connector
 import os
 from dotenv import load_dotenv
+from module.db import get_db_connection
+
 
 load_dotenv()
 token_bp = Blueprint('token_bp', __name__)
@@ -17,14 +19,8 @@ def update_token():
     if not user_id or not fcm_token:
         return jsonify({"error": "Missing user_id or fcm_token"}), 400
 
-    try:
-        db = mysql.connector.connect(
-            host=os.environ.get("MYSQL_HOST"),
-            port=int(os.environ.get("MYSQL_PORT")),
-            user=os.environ.get("MYSQL_USER"),
-            password=os.environ.get("MYSQL_PASSWORD"),
-            database=os.environ.get("MYSQL_DATABASE")
-        )
+    db = get_db_connection()
+    if db:
         cursor = db.cursor()
         # 使用 INSERT ... ON DUPLICATE KEY UPDATE 语句来插入或更新 token
         cursor.execute("""
@@ -41,14 +37,8 @@ def update_token():
 
 @token_bp.route('/tokens', methods=['GET'])
 def list_tokens():
-    try:
-        db = mysql.connector.connect(
-            host=os.environ.get("MYSQL_HOST"),
-            port=int(os.environ.get("MYSQL_PORT")),
-            user=os.environ.get("MYSQL_USER"),
-            password=os.environ.get("MYSQL_PASSWORD"),
-            database=os.environ.get("MYSQL_DATABASE")
-        )
+    db = get_db_connection()
+    if db:
         cursor = db.cursor(dictionary=True)
         cursor.execute("SELECT user_id, token FROM fcm_tokens")
         tokens = cursor.fetchall()
