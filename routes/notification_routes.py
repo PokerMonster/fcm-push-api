@@ -19,7 +19,6 @@ def send_notification():
     body = data.get("body", "這是預設訊息")
 
     try:
-        # 建立資料庫連線
         db = get_db_connection()
         if db:     
             cursor = db.cursor(buffered=True, dictionary=True)
@@ -28,24 +27,25 @@ def send_notification():
             cursor.close()
             db.close()
 
-        if not results:
-            return jsonify({"error": "User not found or token missing"}), 404
+            if not results:
+                return jsonify({"error": "User not found or token missing"}), 404
 
-        tokens = [row['token'] for row in results]
-        response = send_multicast_notification(tokens, title, body)
-        return jsonify(response)
+            tokens = [row['token'] for row in results]
+            response = send_multicast_notification(tokens, title, body)
 
-        #return jsonify({
-        #    "message": "Notification sent",
-        #    "success": response["success_count"],
-        #    "failure": response["failure_count"]
-        #})
+            # optional log details
+            for idx, r in enumerate(response.get("responses", [])):
+                if r.get("success"):
+                    print(f"✅ 成功發送至: {tokens[idx]}")
+                else:
+                    print(f"❌ 發送失敗: {tokens[idx]}, 錯誤：{r.get('error')}")
+
+            return jsonify(response)
+        else:
+            return jsonify({"error": "Database connection failed"}), 500
     except mysql.connector.Error as err:
         return jsonify({"error": str(err)}), 500
     except Exception as e:
+        import traceback
+        print(traceback.format_exc())
         return jsonify({"error": str(e)}), 500
-    for idx, resp in enumerate(response.responses):
-        if resp.success:
-            print(f"✅ 成功發送至: {tokens[idx]}")
-        else:
-            print(f"❌ 發送失敗: {tokens[idx]}, 錯誤：{resp.exception}")
