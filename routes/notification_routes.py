@@ -32,6 +32,18 @@ def send_notification():
 
             tokens = [row['token'] for row in results]
             response = send_multicast_notification(tokens, title, body)
+            # 如果有無效 token，從資料庫刪除
+            invalid_tokens = response.get("invalid_tokens", [])
+            if invalid_tokens:
+                db = get_db_connection()
+                if db:
+                    cursor = db.cursor()
+                    for bad_token in invalid_tokens:
+                        cursor.execute("DELETE FROM fcm_tokens WHERE token = %s", (bad_token,))
+                    db.commit()
+                    cursor.close()
+                    db.close()
+                    print(f"🧹 已刪除失效 token 數量: {len(invalid_tokens)}")
 
             # optional log details
             for idx, r in enumerate(response.get("responses", [])):
