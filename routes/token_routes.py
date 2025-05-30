@@ -1,6 +1,6 @@
 # routes/token_routes.py
 from flask import Blueprint, request, jsonify
-import mysql.connector
+#import mysql.connector
 import os
 from dotenv import load_dotenv
 from module.db import get_db_connection
@@ -21,7 +21,7 @@ def update_token():
 
     db = get_db_connection()
     if db:
-        cursor = db.cursor()
+        cursor = db.cursor(dictionary=True)
         # 使用 INSERT ... ON DUPLICATE KEY UPDATE 语句来插入或更新 token
         cursor.execute("""
             INSERT INTO fcm_tokens (user_id, token)
