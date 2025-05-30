@@ -33,12 +33,13 @@ def send_notification():
 
         tokens = [row['token'] for row in results]
         response = send_multicast_notification(tokens, title, body)
+        return jsonify(response)
 
-        return jsonify({
-            "message": "Notification sent",
-            "success": response["success_count"],
-            "failure": response["failure_count"]
-        })
+        #return jsonify({
+        #    "message": "Notification sent",
+        #    "success": response["success_count"],
+        #    "failure": response["failure_count"]
+        #})
     except mysql.connector.Error as err:
         return jsonify({"error": str(err)}), 500
     except Exception as e:
