@@ -5,6 +5,7 @@ from firebase_admin import credentials, initialize_app
 import mysql.connector
 from routes.token_routes import token_bp
 from routes.notification_routes import notification_bp
+from routes.send_direct_fcm import send_direct_bp
 
 load_dotenv()
 
@@ -18,6 +19,7 @@ app = Flask(__name__)  # ← 必須是 app！
 user_tokens = {}
 app.register_blueprint(token_bp)
 app.register_blueprint(notification_bp)
+app.register_blueprint(send_direct_bp)
 
 
 db_config = {
