@@ -28,7 +28,7 @@ def send_notification():
             cursor.close()
             db.close()
 
-        if not result:
+        if not results:
             return jsonify({"error": "User not found or token missing"}), 404
 
         tokens = [row['token'] for row in results]
