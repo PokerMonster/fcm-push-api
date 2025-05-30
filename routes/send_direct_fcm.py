@@ -14,6 +14,7 @@ if not cred_json:
     raise RuntimeError("FIREBASE_SERVICE_ACCOUNT 環境變數未設置")
 
 cred_dict = json.loads(cred_json)
+cred_dict["private_key"] = cred_dict["private_key"].replace("\\n", "\n")  # ✅ 加這行
 credentials = service_account.Credentials.from_service_account_info(
     cred_dict,
     scopes=["https://www.googleapis.com/auth/firebase.messaging"]
