@@ -19,18 +19,18 @@ def update_token():
     if not user_id or not fcm_token:
         return jsonify({"error": "Missing user_id or fcm_token"}), 400
 
-    db = get_db_connection()
-    if db:
-        cursor = db.cursor(dictionary=True)
-        # 使用 INSERT ... ON DUPLICATE KEY UPDATE 语句来插入或更新 token
-        cursor.execute("""
-            INSERT INTO fcm_tokens (user_id, token)
-            VALUES (%s, %s)
-            ON DUPLICATE KEY UPDATE token = VALUES(token)
-        """, (user_id, fcm_token))
-        db.commit()
-        cursor.close()
-        db.close()
+db = get_db_connection()
+if db:
+    cursor = db.cursor(dictionary=True)
+    # 使用 INSERT ... ON DUPLICATE KEY UPDATE 语句来插入或更新 token
+    cursor.execute("""
+        INSERT INTO fcm_tokens (user_id, token)
+        VALUES (%s, %s)
+        ON DUPLICATE KEY UPDATE token = VALUES(token)
+    """, (user_id, fcm_token))
+    db.commit()
+    cursor.close()
+    db.close()
         return jsonify({"message": "Token updated"}), 200
     except mysql.connector.Error as err:
         return jsonify({"error": str(err)}), 500
