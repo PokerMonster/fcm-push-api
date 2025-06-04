@@ -25,5 +25,5 @@ jobs:
       run: |
         docker run -d --name fcm-api \
           -p 5000:5000 \
-          --env-file .env \
+          --env-file files/.env \
           fcm-push-api
