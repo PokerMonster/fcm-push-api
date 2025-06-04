@@ -1,4 +1,4 @@
-.env files 
+.env files  
 MYSQL_HOST=ip  
 MYSQL_PORT=port  
 MYSQL_USER=user  
